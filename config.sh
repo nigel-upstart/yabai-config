@@ -2,10 +2,15 @@
 
 # Configuration for yabai iTerm quadrant tiling
 
-# Default keybinding (cmd + 4)
-# If this conflicts, uncomment the line below to use cmd + shift + 4
-KEYBINDING="${KEYBINDING:-cmd - 4}"
-# KEYBINDING="cmd + shift - 4"
+# Default keybindings
+# cmd + 4: Tile first 4 iTerm windows (1-4)
+# cmd + 5: Tile next 4 iTerm windows (5-8)
+KEYBINDING_1="${KEYBINDING_1:-cmd - 4}"
+KEYBINDING_2="${KEYBINDING_2:-cmd - 5}"
+
+# Alternative if conflicts exist:
+# KEYBINDING_1="cmd + shift - 4"
+# KEYBINDING_2="cmd + shift - 5"
 
 # Path to the tiling script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

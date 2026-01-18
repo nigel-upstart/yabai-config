@@ -1,13 +1,13 @@
 # Yabai iTerm Quadrant Tiling
 
-Automatically tile the first four iTerm2 windows into a 2×2 quadrant layout using yabai and skhd, while keeping yabai in float mode.
+Automatically tile iTerm2 windows into a 2×2 quadrant layout using yabai and skhd, while keeping yabai in float mode.
 
 ## Features
 
-- 🎯 **Simple quadrant tiling** - First 4 iTerm windows snap to quarters of the screen
+- 🎯 **Batch quadrant tiling** - Tile up to 8 iTerm windows across two layouts
 - 🎨 **Float mode compatible** - No need to switch to BSP layout
-- ⌨️ **Configurable keybinding** - Default `⌘4` (one-handed)
-- 🔧 **Easy enable/disable** - Simple scripts to manage keybinding
+- ⌨️ **Dual keybindings** - `⌘4` for windows 1-4, `⌘5` for windows 5-8
+- 🔧 **Easy enable/disable** - Simple scripts to manage keybindings
 - 📦 **Self-contained** - All configuration in this repo
 
 ## Prerequisites
@@ -32,13 +32,14 @@ Grant Accessibility permissions to both yabai and skhd in:
 ```
 
 This will:
-- Add the keybinding to `~/.config/skhd/skhdrc`
+- Add the keybindings to `~/.config/skhd/skhdrc`
 - Start or restart skhd
-- Default keybinding: `⌘4`
+- Default keybindings: `⌘4` and `⌘5`
 
 ### 2. Use It
 
-Open at least 4 iTerm2 windows, then press `⌘4` to tile them into quadrants:
+**Tile first 4 windows (`⌘4`):**
+Open at least 4 iTerm2 windows, then press `⌘4`:
 
 ```
 ┌─────────┬─────────┐
@@ -47,6 +48,19 @@ Open at least 4 iTerm2 windows, then press `⌘4` to tile them into quadrants:
 │ Window 3│ Window 4│
 └─────────┴─────────┘
 ```
+
+**Tile next 4 windows (`⌘5`):**
+With 8 iTerm2 windows open, press `⌘5`:
+
+```
+┌─────────┬─────────┐
+│ Window 5│ Window 6│
+├─────────┼─────────┤
+│ Window 7│ Window 8│
+└─────────┴─────────┘
+```
+
+Windows are ordered by most-recently-focused, so the "first 4" are the 4 most recently used windows.
 
 ### 3. Disable (Optional)
 
@@ -58,16 +72,18 @@ To remove the keybinding:
 
 ## Configuration
 
-### Change the Keybinding
+### Change the Keybindings
 
-Edit `config.sh` and set your preferred keybinding:
+Edit `config.sh` and set your preferred keybindings:
 
 ```bash
-# Default: cmd + 4
-KEYBINDING="cmd - 4"
+# Default: cmd + 4 and cmd + 5
+KEYBINDING_1="cmd - 4"
+KEYBINDING_2="cmd - 5"
 
-# Alternative: cmd + shift + 4
-# KEYBINDING="cmd + shift - 4"
+# Alternative: cmd + shift + 4 and cmd + shift + 5
+# KEYBINDING_1="cmd + shift - 4"
+# KEYBINDING_2="cmd + shift - 5"
 ```
 
 Then run `./enable_keybinding.sh` again to apply.
@@ -86,17 +102,23 @@ See [skhd documentation](https://github.com/koekeishiya/skhd) for more options.
 You can also run the tiling script directly without a keybinding:
 
 ```bash
-./tile_iterm_quadrants.sh
+# Tile windows 1-4
+./tile_iterm_quadrants.sh 0
+
+# Tile windows 5-8
+./tile_iterm_quadrants.sh 4
 ```
 
 ## How It Works
 
 The `tile_iterm_quadrants.sh` script:
 
-1. Queries all windows using `yabai -m query --windows`
-2. Filters for iTerm2 application windows
-3. Takes the first 4 window IDs
-4. Places each in a quadrant using yabai's grid format:
+1. Accepts an optional offset parameter (default: 0)
+2. Queries all windows using `yabai -m query --windows`
+3. Filters for iTerm2 application windows
+4. Skips the first N windows (where N is the offset)
+5. Takes the next 4 window IDs
+6. Places each in a quadrant using yabai's grid format:
    - Top-left: `2:2:0:0:1:1`
    - Top-right: `2:2:1:0:1:1`
    - Bottom-left: `2:2:0:1:1:1`
@@ -104,13 +126,16 @@ The `tile_iterm_quadrants.sh` script:
 
 The grid format is `rows:cols:start-x:start-y:width:height`, where the screen is divided into a 2×2 grid and each window occupies one cell.
 
+**Window Ordering:** Windows are returned by yabai in most-recently-focused order (see [yabai issue #944](https://github.com/koekeishiya/yabai/issues/944)), so the "first 4" windows are the 4 most recently active windows.
+
 ## Troubleshooting
 
-### Keybinding not working
+### Keybindings not working
 
 1. Check if skhd is running: `pgrep skhd`
-2. Restart skhd: `brew services restart skhd`
-3. Check logs: `tail -f /opt/homebrew/var/log/skhd/skhd.log`
+2. Restart skhd manually: `killall skhd && skhd &`
+3. Check logs: `tail -f /tmp/skhd.stderr`
+4. Verify keybindings: `cat ~/.config/skhd/skhdrc`
 
 ### Accessibility permissions
 

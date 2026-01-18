@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
-# Tile the first 4 iTerm2 windows into a 2x2 quadrant layout
+# Tile 4 iTerm2 windows into a 2x2 quadrant layout
 # Works with yabai in float mode using explicit grid placement
+#
+# Usage: tile_iterm_quadrants.sh [offset]
+#   offset: Number of windows to skip (default: 0)
+#   Example: offset=0 tiles windows 1-4, offset=4 tiles windows 5-8
 
 # Check if yabai is available
 if ! command -v yabai &> /dev/null; then
@@ -15,11 +19,21 @@ if ! command -v jq &> /dev/null; then
     exit 1
 fi
 
+# Get offset parameter (default 0)
+OFFSET=${1:-0}
+
 # Query all iTerm2 windows and get their IDs
-# Filter for iTerm2 app, get the first 4 window IDs
-window_ids=$(yabai -m query --windows | \
-    jq -r '.[] | select(.app=="iTerm2") | .id' | \
-    head -n 4)
+# Filter for iTerm2 app, skip OFFSET windows, then get the next 4 window IDs
+if [ "$OFFSET" -eq 0 ]; then
+    window_ids=$(yabai -m query --windows | \
+        jq -r '.[] | select(.app=="iTerm2") | .id' | \
+        head -n 4)
+else
+    window_ids=$(yabai -m query --windows | \
+        jq -r '.[] | select(.app=="iTerm2") | .id' | \
+        tail -n +$((OFFSET + 1)) | \
+        head -n 4)
+fi
 
 # Check if we found any iTerm windows
 if [ -z "$window_ids" ]; then
@@ -29,7 +43,11 @@ fi
 
 # Count how many windows we found
 window_count=$(echo "$window_ids" | wc -l | tr -d ' ')
-echo "Found $window_count iTerm2 window(s)"
+if [ "$OFFSET" -eq 0 ]; then
+    echo "Tiling windows 1-4 (found $window_count window(s))"
+else
+    echo "Tiling windows $((OFFSET + 1))-$((OFFSET + 4)) (found $window_count window(s))"
+fi
 
 # Grid placement for 2x2 quadrants
 # Format: rows:cols:start-x:start-y:width:height
