@@ -39,11 +39,18 @@ echo "Restarting skhd..."
 
 # Restart skhd to apply changes
 if pgrep -x skhd > /dev/null; then
-    brew services restart skhd
-    echo "✓ skhd restarted"
-else
-    brew services start skhd
+    killall skhd
+    sleep 0.5
+fi
+
+skhd &
+sleep 0.5
+
+if pgrep -x skhd > /dev/null; then
     echo "✓ skhd started"
+else
+    echo "✗ Failed to start skhd. Try running: skhd &"
+    exit 1
 fi
 
 echo ""

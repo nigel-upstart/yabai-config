@@ -29,7 +29,10 @@ echo "Restarting skhd..."
 
 # Restart skhd to apply changes
 if pgrep -x skhd > /dev/null; then
-    brew services restart skhd
+    killall skhd
+    sleep 0.5
+    skhd &
+    sleep 0.5
     echo "✓ skhd restarted"
 fi
 
