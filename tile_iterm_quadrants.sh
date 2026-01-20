@@ -70,3 +70,8 @@ while IFS= read -r window_id; do
 done <<< "$window_ids"
 
 echo "Tiled $count iTerm2 window(s) into quadrants"
+
+# Bring iTerm to front and focus the first tiled window
+if [ $count -gt 0 ]; then
+    osascript -e 'tell application "iTerm2" to activate'
+fi
