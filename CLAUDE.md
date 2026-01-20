@@ -7,11 +7,11 @@ This project provides scripting to tile the first four iTerm windows into a 2x2 
 ## Key Features
 
 - **Float Mode Compatibility**: Uses yabai's grid placement without switching to BSP layout
-- **Batch Window Tiling**: Support for tiling up to 8 windows across two batches
-- **Dual Keybindings**: Command+4 for windows 1-4, Command+5 for windows 5-8
-- **Enable/Disable Scripts**: Easy scripts to add or remove the keybindings
-- **One-Handed Operation**: Keybindings designed for single-hand activation
-- **Offset-Based Selection**: Script accepts offset parameter for flexible window selection
+- **Simple Keybinding**: Command+4 tiles the first 4 most-recently-focused iTerm windows
+- **Global Hotkey**: Works from any application, brings iTerm windows to front
+- **Enable/Disable Scripts**: Easy scripts to add or remove the keybinding
+- **One-Handed Operation**: Keybinding designed for single-hand activation
+- **Offset-Based Selection**: Script accepts optional offset parameter for manual use
 
 ## Architecture
 
@@ -27,10 +27,11 @@ Yabai uses the format `<rows>:<cols>:<start-x>:<start-y>:<width>:<height>` for g
 ### Components
 
 1. **tile_iterm_quadrants.sh**: Main script that queries iTerm windows and places them in quadrants
-   - Accepts optional offset parameter (0 for windows 1-4, 4 for windows 5-8)
-2. **enable_keybinding.sh**: Adds both keybindings to skhd configuration
-3. **disable_keybinding.sh**: Removes the keybindings from skhd configuration
-4. **config.sh**: Configuration file for keybindings and paths
+   - Accepts optional offset parameter (default: 0 for windows 1-4)
+   - Brings iTerm to front after tiling
+2. **enable_keybinding.sh**: Adds the keybinding to skhd configuration
+3. **disable_keybinding.sh**: Removes the keybinding from skhd configuration
+4. **config.sh**: Configuration file for keybinding and paths
 5. **setup_skhd_autostart.sh**: Sets up skhd to start automatically via LaunchAgent
 
 ## Requirements

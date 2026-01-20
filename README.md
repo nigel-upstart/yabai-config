@@ -1,14 +1,15 @@
 # Yabai iTerm Quadrant Tiling
 
-Automatically tile iTerm2 windows into a 2×2 quadrant layout using yabai and skhd, while keeping yabai in float mode.
+Automatically tile the first 4 iTerm2 windows into a 2×2 quadrant layout using yabai and skhd, while keeping yabai in float mode.
 
 ## Features
 
-- 🎯 **Batch quadrant tiling** - Tile up to 8 iTerm windows across two layouts
+- 🎯 **Simple quadrant tiling** - Tile first 4 iTerm windows with one keystroke
 - 🎨 **Float mode compatible** - No need to switch to BSP layout
-- ⌨️ **Dual keybindings** - `⌘4` for windows 1-4, `⌘5` for windows 5-8
-- 🔧 **Easy enable/disable** - Simple scripts to manage keybindings
+- ⌨️ **One-handed keybinding** - `⌘4` (configurable)
+- 🔧 **Easy enable/disable** - Simple scripts to manage keybinding
 - 📦 **Self-contained** - All configuration in this repo
+- 🪟 **Global hotkey** - Works from any application, brings iTerm to front
 
 ## Prerequisites
 
@@ -32,14 +33,13 @@ Grant Accessibility permissions to both yabai and skhd in:
 ```
 
 This will:
-- Add the keybindings to `~/.config/skhd/skhdrc`
+- Add the keybinding to `~/.config/skhd/skhdrc`
 - Start or restart skhd
-- Default keybindings: `⌘4` and `⌘5`
+- Default keybinding: `⌘4`
 
 ### 2. Use It
 
-**Tile first 4 windows (`⌘4`):**
-Open at least 4 iTerm2 windows, then press `⌘4`:
+Open at least 4 iTerm2 windows, then press `⌘4` (from any application):
 
 ```
 ┌─────────┬─────────┐
@@ -49,18 +49,7 @@ Open at least 4 iTerm2 windows, then press `⌘4`:
 └─────────┴─────────┘
 ```
 
-**Tile next 4 windows (`⌘5`):**
-With 8 iTerm2 windows open, press `⌘5`:
-
-```
-┌─────────┬─────────┐
-│ Window 5│ Window 6│
-├─────────┼─────────┤
-│ Window 7│ Window 8│
-└─────────┴─────────┘
-```
-
-Windows are ordered by most-recently-focused, so the "first 4" are the 4 most recently used windows.
+The first 4 windows are selected by most-recently-focused order, and iTerm is brought to the front automatically.
 
 ### 3. Disable (Optional)
 
@@ -72,18 +61,16 @@ To remove the keybinding:
 
 ## Configuration
 
-### Change the Keybindings
+### Change the Keybinding
 
-Edit `config.sh` and set your preferred keybindings:
+Edit `config.sh` and set your preferred keybinding:
 
 ```bash
-# Default: cmd + 4 and cmd + 5
-KEYBINDING_1="cmd - 4"
-KEYBINDING_2="cmd - 5"
+# Default: cmd + 4
+KEYBINDING="cmd - 4"
 
-# Alternative: cmd + shift + 4 and cmd + shift + 5
-# KEYBINDING_1="cmd + shift - 4"
-# KEYBINDING_2="cmd + shift - 5"
+# Alternative: cmd + shift + 4
+# KEYBINDING="cmd + shift - 4"
 ```
 
 Then run `./enable_keybinding.sh` again to apply.
@@ -102,9 +89,10 @@ See [skhd documentation](https://github.com/koekeishiya/skhd) for more options.
 You can also run the tiling script directly without a keybinding:
 
 ```bash
-# Tile windows 1-4
-./tile_iterm_quadrants.sh 0
+# Tile first 4 windows
+./tile_iterm_quadrants.sh
 
+# Or specify an offset to tile different windows
 # Tile windows 5-8
 ./tile_iterm_quadrants.sh 4
 ```
@@ -130,12 +118,14 @@ The grid format is `rows:cols:start-x:start-y:width:height`, where the screen is
 
 ## Troubleshooting
 
-### Keybindings not working
+### Keybinding not working
 
 1. Check if skhd is running: `pgrep skhd`
 2. Restart skhd manually: `killall skhd && skhd &`
-3. Check logs: `tail -f /tmp/skhd.stderr`
-4. Verify keybindings: `cat ~/.config/skhd/skhdrc`
+3. Verify keybinding: `cat ~/.config/skhd/skhdrc`
+4. Make sure you've added the **actual binary** to Accessibility:
+   - Find the real path: `ls -la /opt/homebrew/bin/skhd`
+   - Add `/opt/homebrew/Cellar/skhd/VERSION/bin/skhd` to Accessibility permissions
 
 ### Accessibility permissions
 

@@ -9,12 +9,10 @@ source "${SCRIPT_DIR}/config.sh"
 # Ensure skhd config directory exists
 mkdir -p "$(dirname "$SKHD_CONFIG")"
 
-# Check if the keybindings already exist
+# Check if the keybinding already exists
 if [ -f "$SKHD_CONFIG" ] && grep -q "$MARKER_START" "$SKHD_CONFIG"; then
-    echo "Keybindings already exist in $SKHD_CONFIG"
-    echo "Current keybindings:"
-    echo "  $KEYBINDING_1 - Tile windows 1-4"
-    echo "  $KEYBINDING_2 - Tile windows 5-8"
+    echo "Keybinding already exists in $SKHD_CONFIG"
+    echo "Current keybinding: $KEYBINDING"
     exit 0
 fi
 
@@ -24,21 +22,17 @@ if [ ! -f "$SKHD_CONFIG" ]; then
     echo "Created new skhd config at $SKHD_CONFIG"
 fi
 
-# Add the keybindings to skhd config
+# Add the keybinding to skhd config
 cat >> "$SKHD_CONFIG" << EOF
 
 $MARKER_START
-# Tile first 4 iTerm windows into quadrants (windows 1-4)
-$KEYBINDING_1 : "$TILE_SCRIPT" 0
-
-# Tile next 4 iTerm windows into quadrants (windows 5-8)
-$KEYBINDING_2 : "$TILE_SCRIPT" 4
+# Tile first 4 iTerm windows into quadrants
+$KEYBINDING : "$TILE_SCRIPT"
 $MARKER_END
 EOF
 
-echo "✓ Keybindings added to $SKHD_CONFIG"
-echo "  $KEYBINDING_1 - Tile windows 1-4"
-echo "  $KEYBINDING_2 - Tile windows 5-8"
+echo "✓ Keybinding added to $SKHD_CONFIG"
+echo "  Keybinding: $KEYBINDING"
 echo "  Script: $TILE_SCRIPT"
 echo ""
 echo "Restarting skhd..."
@@ -60,6 +54,4 @@ else
 fi
 
 echo ""
-echo "Setup complete!"
-echo "  Press $KEYBINDING_1 to tile iTerm windows 1-4"
-echo "  Press $KEYBINDING_2 to tile iTerm windows 5-8"
+echo "Setup complete! Press $KEYBINDING to tile your first 4 iTerm windows."
