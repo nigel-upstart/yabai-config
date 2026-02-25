@@ -26,11 +26,11 @@ OFFSET=${1:-0}
 # Filter for iTerm2 app with standard window role, skip OFFSET windows, then get the next 4 window IDs
 if [ "$OFFSET" -eq 0 ]; then
     window_ids=$(yabai -m query --windows | \
-        jq -r '.[] | select(.app=="iTerm2" and .role=="AXWindow") | .id' | \
+        jq -r '.[] | select(.app=="iTerm2") | .id' | \
         head -n 4)
 else
     window_ids=$(yabai -m query --windows | \
-        jq -r '.[] | select(.app=="iTerm2" and .role=="AXWindow") | .id' | \
+        jq -r '.[] | select(.app=="iTerm2") | .id' | \
         tail -n +$((OFFSET + 1)) | \
         head -n 4)
 fi
